@@ -23,6 +23,7 @@ class PlayState extends FlxState
     private var jumpVelocity:Float = -1200;
     public var ground:FlxObject;
     public var platform:FlxObject;
+    var specialBadGuy :FlxSprite;
     //groups
     public var enemies:FlxGroup;
     public var enemies2:FlxGroup;
@@ -122,7 +123,7 @@ class PlayState extends FlxState
 
 	public function generateEnemy(timer:FlxTimer):Void {
         //var choice = FlxRandom.intRanged(0, 2);
-        var choice = 0;
+        var choice = 2;
         if(choice == 0) {
             var badGuy :FlxSprite = new FlxSprite(enemyX, enemyY, "assets/images/badguy.png");
             badGuy.velocity.x -= enemyVel;
@@ -132,9 +133,16 @@ class PlayState extends FlxState
             spike.velocity.x -= enemyVel;
             spikeEnemies.add(spike);
         } else if(choice == 2) {
+            /*
             var badGuy :FlxSprite= new FlxSprite(enemyX, enemyY, "assets/images/badguy2.png");
             badGuy.velocity.x -= enemyVel;
             enemies2.add(badGuy);
+            */
+            //var badGuy :FlxSprite= new FlxSprite(enemyX, enemyY-150, "assets/images/badguy2.png");
+            specialBadGuy = new FlxSprite(enemyX, enemyY-200, "assets/images/badguy2.png");
+            specialBadGuy.velocity.x -= enemyVel;
+            specialBadGuy.velocity.y = 100;
+            enemies2.add(specialBadGuy);
 
             /*
             var badGuy :FlxSprite = new FlxSprite(enemyX, enemyY-100, "assets/images/badguy2.png");
@@ -159,7 +167,7 @@ class PlayState extends FlxState
             */
             //enemies.add(badGuy);
             //add(badGuy);
-            myPlatforms.add(badGuy);
+            //myPlatforms.add(badGuy);
             /*
 
             var myPlatform = new FlxSprite(enemyX - 150, enemyY - 50, "assets/images/platform.png");
@@ -177,7 +185,7 @@ class PlayState extends FlxState
             spike.velocity.x -= enemyVel;
             spikeEnemies.add(spike);
         }
-        var timer = new FlxTimer(1.0, generateEnemy, 1);
+        var timer = new FlxTimer(4.0, generateEnemy, 1);
     }
 	
 	/**
@@ -212,10 +220,15 @@ class PlayState extends FlxState
         //FlxG.overlap(myPlatforms, player, collidePlatforms, pixelPerfectProcess);
         //FlxG.collide(player, myPlatforms);
         FlxG.collide(player, platform);
+        if(specialBadGuy != null && specialBadGuy.alive) {
+            if( ((player.x - specialBadGuy.x) * (player.x - specialBadGuy.x)
+ + (player.y - specialBadGuy.y) * (player.y - specialBadGuy.y)) < 5000) {
+                collideEnemy(specialBadGuy, player);
+            }
+        }
     }	
 
     public function collidePlatforms(enemy:FlxObject, player:FlxObject):Void {
-        trace("PLATFORMS poij");
         FlxG.switchState(new DeathState(score));
     }
 
