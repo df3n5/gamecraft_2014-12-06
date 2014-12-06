@@ -10,6 +10,8 @@ import flixel.util.FlxPoint;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
+import flixel.util.FlxTimer;
+import flixel.util.FlxRandom;
 
 /**
  * A FlxState which can be used for the actual gameplay.
@@ -17,7 +19,7 @@ import flixel.util.FlxMath;
 class PlayState extends FlxState
 {
     var player:Player;
-    private var jumpVelocity:Float = -400;
+    private var jumpVelocity:Float = -1200;
     public var ground:FlxObject;
     var badGuy:FlxSprite;
     //groups
@@ -25,6 +27,11 @@ class PlayState extends FlxState
     public var spikeEnemies:FlxGroup;
     var enemyX:Float;
     var enemyY:Float;
+    var enemyVel:Float = 450;
+
+    //score
+    var score:Int;
+    var scoreText:FlxText;
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -34,32 +41,46 @@ class PlayState extends FlxState
         bgColor = 0xffaaaaaa;
         player = new Player(0, -100);
         //player.velocity.x = 30;
-        player.acceleration.y = 700;
+        player.acceleration.y = 4400;
         ground = new FlxSprite(-120, 0, "assets/images/ground.png");
         // Make it able to collide, and make sure it's not tossed around
         ground.solid = ground.immovable = true;
         add(ground);
 
+        var timer = new FlxTimer(1.0, generateEnemy, 1);
+        //add(timer);
         //enemies 
         enemies = new FlxGroup();
         spikeEnemies = new FlxGroup();
-        enemyX = 200;
+        enemyX = 600;
         enemyY = player.y + 36;
-        badGuy = new FlxSprite(enemyX, enemyY, "assets/images/badguy.png");
-        badGuy.velocity.x -= 50;
-        enemies.add(badGuy);
         add(enemies);
 
         //spikes
-        var spike : FlxSprite = new FlxSprite(enemyX+100, enemyY, "assets/images/spikewall.png");
-        spike.velocity.x -= 50;
-        spikeEnemies.add(spike);
         add(spikeEnemies);
 
         add(badGuy);
         FlxG.camera.follow(player.cameraSprite);
         add(player);
+        score = 0;
+        scoreText = new FlxText(0, 0, 200, "Score: " + score, 16);
+        //scoreText.text = "Score: " + score;
+        add(scoreText);
 	}
+
+	public function generateEnemy(timer:FlxTimer):Void {
+        var choice = FlxRandom.intRanged(0, 1);
+        if(choice == 0) {
+            badGuy = new FlxSprite(enemyX, enemyY, "assets/images/badguy.png");
+            badGuy.velocity.x -= enemyVel;
+            enemies.add(badGuy);
+        } else if(choice == 1) {
+            var spike : FlxSprite = new FlxSprite(enemyX+100, enemyY, "assets/images/spikewall.png");
+            spike.velocity.x -= enemyVel;
+            spikeEnemies.add(spike);
+        }
+        var timer = new FlxTimer(1.0, generateEnemy, 1);
+    }
 	
 	/**
 	 * Function that is called when this state is destroyed - you might want to 
@@ -83,7 +104,7 @@ class PlayState extends FlxState
         */
         //ground.x = player.x-100;
         FlxG.collide(player, ground);
-        if (FlxG.keys.pressed.W && player.isTouching(FlxObject.FLOOR)) {
+        if (FlxG.keys.pressed.SPACE && player.isTouching(FlxObject.FLOOR)) {
             player.velocity.y = jumpVelocity;
         }
         FlxG.overlap(enemies, player, collideEnemy, pixelPerfectProcess);
@@ -92,12 +113,14 @@ class PlayState extends FlxState
 
 
     public function collideSpikeEnemy(enemy:FlxObject, player:FlxObject):Void {
-        FlxG.switchState(new PlayState());
+        FlxG.switchState(new DeathState(score));
     }
 
     public function collideEnemy(enemy:FlxObject, player:FlxObject):Void {
         //TODO: Add fancy animation + scoring
         enemy.kill();
+        score += 10;
+        scoreText.text = "Score: " + score;
     }
 
     private function pixelPerfectProcess(officer:FlxObject, bullet:FlxObject):Bool {

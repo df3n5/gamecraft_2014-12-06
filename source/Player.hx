@@ -12,6 +12,7 @@ class Player extends FlxSprite {
         this.loadGraphic("assets/images/cat.png", true, 43, 48);
         //this.offset.x += this.width*0.25;
         this.height *= 0.9;
+        this.width *= 0.9;
         this.cameraSprite = new FlxSprite();
         this.cameraSprite.y = y-80;
         //this.cameraSprite.y = y;
