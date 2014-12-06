@@ -12,13 +12,18 @@ import flixel.util.FlxMath;
  */
 class MenuState extends FlxState
 {
-	/**
-	 * Function that is called up when to state is created to set it up. 
-	 */
-	override public function create():Void
-	{
-		super.create();
-	}
+    override public function create():Void {
+        super.create();
+        var title = new FlxSprite(0, 0, "assets/images/title.png");
+        add(title);
+    }
+
+    override public function update():Void {
+        super.update();
+        if(FlxG.keys.justPressed.SPACE) {
+            FlxG.switchState(new PlayState());
+        }
+    }
 	
 	/**
 	 * Function that is called when this state is destroyed - you might want to 
@@ -28,12 +33,4 @@ class MenuState extends FlxState
 	{
 		super.destroy();
 	}
-
-	/**
-	 * Function that is called once every frame.
-	 */
-	override public function update():Void
-	{
-		super.update();
-	}	
 }

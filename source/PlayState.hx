@@ -55,6 +55,7 @@ class PlayState extends FlxState
         add(ground);
 
         var timer = new FlxTimer(1.0, generateEnemy, 1);
+        var timer = new FlxTimer(0.1, addToScore, 1);
         //add(timer);
         //enemies 
         enemies = new FlxGroup();
@@ -96,6 +97,12 @@ class PlayState extends FlxState
         var sound = FlxG.sound.play("assets/music/music_" + musicTrack + "_edit.wav", 0.7);
         sound.onComplete = onMusComplete;
         musicLoopsSoFar++;
+    }
+
+	public function addToScore(timer:FlxTimer):Void {
+        score += 1;
+        var timer = new FlxTimer(0.1, addToScore, 1);
+        scoreText.text = "Score: " + score;
     }
 
 	public function generateEnemy(timer:FlxTimer):Void {
@@ -150,7 +157,7 @@ class PlayState extends FlxState
     public function collideEnemy(enemy:FlxObject, player:FlxObject):Void {
         //TODO: Add fancy animation + scoring
         enemy.kill();
-        score += 10;
+        score += 100;
         scoreText.text = "Score: " + score;
         FlxG.sound.play("assets/sounds/Pickup_Coin15.wav", 1.0);
     }
