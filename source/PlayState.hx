@@ -93,7 +93,6 @@ class PlayState extends FlxState
                 musicTrack = 6;
             }
         }
-        trace("Music Track : " + musicTrack);
         var sound = FlxG.sound.play("assets/music/music_" + musicTrack + "_edit.wav", 0.7);
         sound.onComplete = onMusComplete;
         musicLoopsSoFar++;
