@@ -5,6 +5,7 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
 import flixel.FlxState;
+import flixel.system.FlxSound;
 import flixel.FlxCamera;
 import flixel.util.FlxPoint;
 import flixel.text.FlxText;
@@ -28,6 +29,7 @@ class PlayState extends FlxState
     var enemyX:Float;
     var enemyY:Float;
     var enemyVel:Float = 450;
+    private var music:FlxSound;
 
     //score
     var score:Int;
@@ -66,7 +68,22 @@ class PlayState extends FlxState
         scoreText = new FlxText(0, 0, 200, "Score: " + score, 16);
         //scoreText.text = "Score: " + score;
         add(scoreText);
+
+        //music
+        music = null;
+        if(FlxG.sound.music != null) {
+            FlxG.sound.music.stop();
+        }
+        FlxG.sound.playMusic("assets/music/music_0_edit.wav", 0.7, false);
+        FlxG.sound.music.onComplete = onMusComplete;
 	}
+
+    public function onMusComplete() : Void {
+        trace("HI");
+        //FlxG.sound.playMusic("assets/music/music_1_edit.wav", 0.7, false);
+        FlxG.sound.play("assets/music/music_1_edit.wav", 0.7);
+        //FlxG.sound.music.onComplete = onMusComplete;
+    }
 
 	public function generateEnemy(timer:FlxTimer):Void {
         var choice = FlxRandom.intRanged(0, 1);
@@ -106,6 +123,7 @@ class PlayState extends FlxState
         FlxG.collide(player, ground);
         if (FlxG.keys.pressed.SPACE && player.isTouching(FlxObject.FLOOR)) {
             player.velocity.y = jumpVelocity;
+            FlxG.sound.play("assets/sounds/Jump6.wav", 1.0);
         }
         FlxG.overlap(enemies, player, collideEnemy, pixelPerfectProcess);
         FlxG.overlap(spikeEnemies, player, collideSpikeEnemy, pixelPerfectProcess);
@@ -121,6 +139,7 @@ class PlayState extends FlxState
         enemy.kill();
         score += 10;
         scoreText.text = "Score: " + score;
+        FlxG.sound.play("assets/sounds/Pickup_Coin15.wav", 1.0);
     }
 
     private function pixelPerfectProcess(officer:FlxObject, bullet:FlxObject):Bool {

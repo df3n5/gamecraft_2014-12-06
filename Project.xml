@@ -29,7 +29,9 @@
 	
 	<set name="BUILD_DIR" value="export" />
 	<classpath name="source" />
-	<assets path="assets" />
+    <assets path="assets" />
+        <!--        <sound path="sounds/Jump6.wav" id="jump_1" />
+    </assets>-->
 	
 	<!--------------------------------LIBRARIES------------------------------------->
 
