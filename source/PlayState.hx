@@ -34,6 +34,11 @@ class PlayState extends FlxState
     //score
     var score:Int;
     var scoreText:FlxText;
+
+    //music
+    var musicLoops : Int = 1;
+    var musicLoopsSoFar : Int = 0;
+    var musicTrack : Int = 0;
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -76,13 +81,21 @@ class PlayState extends FlxState
         }
         FlxG.sound.playMusic("assets/music/music_0_edit.wav", 0.7, false);
         FlxG.sound.music.onComplete = onMusComplete;
+        
 	}
 
     public function onMusComplete() : Void {
-        trace("HI");
-        //FlxG.sound.playMusic("assets/music/music_1_edit.wav", 0.7, false);
-        FlxG.sound.play("assets/music/music_1_edit.wav", 0.7);
-        //FlxG.sound.music.onComplete = onMusComplete;
+        if(musicLoopsSoFar > musicLoops) {
+            musicLoopsSoFar = 0;
+            musicTrack++;
+            if(musicTrack > 6) {
+                musicTrack = 6;
+            }
+        }
+        trace("Music Track : " + musicTrack);
+        var sound = FlxG.sound.play("assets/music/music_" + musicTrack + "_edit.wav", 0.7);
+        sound.onComplete = onMusComplete;
+        musicLoopsSoFar++;
     }
 
 	public function generateEnemy(timer:FlxTimer):Void {
