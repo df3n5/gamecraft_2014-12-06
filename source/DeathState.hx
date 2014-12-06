@@ -39,18 +39,18 @@ class DeathState extends FlxState
             var content = File.getContent("highscores.txt");
             highScore = Std.parseInt(content);
         }
-        bgColor = 0xffaaaaaa;
+        bgColor = 0xff000000;
         retryText = new FlxText(FlxG.width/2-150, FlxG.height/2 - 100, 800, "You have died", 32);
         add(retryText);
         scoreText = new FlxText(FlxG.width/2-40, FlxG.height/2, 200, "Score: " + score, 16);
         add(scoreText);
         if(score > highScore) {
-            var newHighScoreText = new FlxText(FlxG.width/2-80, FlxG.height/2+50, 200, "NEW HIGHSCORE", 16);
+            var newHighScoreText = new FlxText(FlxG.width/2-80, FlxG.height/2+50, 200, "NEW HIGHSCORE!", 16);
             add(newHighScoreText);
             File.saveContent("highscores.txt", "" + score);
             highScore = score;
         }
-        var highScoreText = new FlxText(FlxG.width/2-87, FlxG.height/2+100, 200, "Highscore : "+ highScore, 16);
+        var highScoreText = new FlxText(FlxG.width/2-70, FlxG.height/2+100, 200, "Highscore : "+ highScore, 16);
         add(highScoreText);
 	}
 

@@ -22,10 +22,12 @@ class PlayState extends FlxState
     var player:Player;
     private var jumpVelocity:Float = -1200;
     public var ground:FlxObject;
-    var badGuy:FlxSprite;
+    public var platform:FlxObject;
     //groups
     public var enemies:FlxGroup;
+    public var enemies2:FlxGroup;
     public var spikeEnemies:FlxGroup;
+    public var myPlatforms:FlxGroup;
     var enemyX:Float;
     var enemyY:Float;
     var enemyVel:Float = 450;
@@ -45,7 +47,8 @@ class PlayState extends FlxState
 	override public function create():Void
 	{
 		super.create();
-        bgColor = 0xffaaaaaa;
+        //bgColor = 0xffaaaaaa;
+        bgColor = 0xffb2eeff;
         player = new Player(0, -100);
         //player.velocity.x = 30;
         player.acceleration.y = 4400;
@@ -55,25 +58,30 @@ class PlayState extends FlxState
         add(ground);
 
         var timer = new FlxTimer(1.0, generateEnemy, 1);
-        var timer = new FlxTimer(0.1, addToScore, 1);
+        var timer = new FlxTimer(0.3, addToScore, 1);
+        var timer = new FlxTimer(1.0, generateCloud, 1);
         //add(timer);
         //enemies 
+        myPlatforms = new FlxGroup();
+        add(myPlatforms);
         enemies = new FlxGroup();
+        enemies2 = new FlxGroup();
         spikeEnemies = new FlxGroup();
         enemyX = 600;
         enemyY = player.y + 36;
         add(enemies);
+        add(enemies2);
 
         //spikes
         add(spikeEnemies);
-
-        add(badGuy);
         FlxG.camera.follow(player.cameraSprite);
         add(player);
         score = 0;
         scoreText = new FlxText(0, 0, 200, "Score: " + score, 16);
         //scoreText.text = "Score: " + score;
         add(scoreText);
+
+        //platforms
 
         //music
         music = null;
@@ -104,14 +112,68 @@ class PlayState extends FlxState
         scoreText.text = "Score: " + score;
     }
 
+	public function generateCloud(timer:FlxTimer):Void {
+        var cloud :FlxSprite = new FlxSprite(enemyX, enemyY-300, "assets/images/cloud.png");
+        cloud.velocity.x -= enemyVel/2;
+        add(cloud);
+
+        var timer = new FlxTimer(3.0, generateCloud, 1);
+    }
+
 	public function generateEnemy(timer:FlxTimer):Void {
-        var choice = FlxRandom.intRanged(0, 1);
+        //var choice = FlxRandom.intRanged(0, 2);
+        var choice = 0;
         if(choice == 0) {
-            badGuy = new FlxSprite(enemyX, enemyY, "assets/images/badguy.png");
+            var badGuy :FlxSprite = new FlxSprite(enemyX, enemyY, "assets/images/badguy.png");
             badGuy.velocity.x -= enemyVel;
             enemies.add(badGuy);
         } else if(choice == 1) {
-            var spike : FlxSprite = new FlxSprite(enemyX+100, enemyY, "assets/images/spikewall.png");
+            var spike : FlxSprite = new FlxSprite(enemyX, enemyY, "assets/images/spikewall.png");
+            spike.velocity.x -= enemyVel;
+            spikeEnemies.add(spike);
+        } else if(choice == 2) {
+            var badGuy :FlxSprite= new FlxSprite(enemyX, enemyY, "assets/images/badguy2.png");
+            badGuy.velocity.x -= enemyVel;
+            enemies2.add(badGuy);
+
+            /*
+            var badGuy :FlxSprite = new FlxSprite(enemyX, enemyY-100, "assets/images/badguy2.png");
+            badGuy.velocity.x -= enemyVel;
+            enemies.add(badGuy);
+            */
+
+            /*
+            //var badGuy :FlxSprite = new FlxSprite(enemyX, enemyY-10, "assets/images/platform.png");
+            var badGuy :FlxSprite = new FlxSprite(enemyX, enemyY-9, "assets/images/platform.png");
+            badGuy.velocity.x -= enemyVel;
+            badGuy.solid = badGuy.immovable = true;
+            platform = badGuy;
+            */
+            
+            /*
+            badGuy.allowCollisions = FlxObject.ANY;
+            badGuy.allowCollisions |= FlxObject.UP;
+            badGuy.allowCollisions |= FlxObject.RIGHT;
+            badGuy.allowCollisions |= FlxObject.LEFT;
+            badGuy.allowCollisions |= FlxObject.DOWN;
+            */
+            //enemies.add(badGuy);
+            //add(badGuy);
+            myPlatforms.add(badGuy);
+            /*
+
+            var myPlatform = new FlxSprite(enemyX - 150, enemyY - 50, "assets/images/platform.png");
+            myPlatform.velocity.x -= enemyVel;
+            //platform.solid = platform.immovable = true;
+            //platforms.add(platform);
+            myPlatforms.add(myPlatform);
+            */
+        } else if(choice == 3) {
+            var spike : FlxSprite = new FlxSprite(enemyX, enemyY, "assets/images/spikes_long.png");
+            spike.velocity.x -= enemyVel;
+            spikeEnemies.add(spike);
+        } else if(choice == 4) {
+            var spike : FlxSprite = new FlxSprite(enemyX, enemyY, "assets/images/spikes_longest.png");
             spike.velocity.x -= enemyVel;
             spikeEnemies.add(spike);
         }
@@ -145,9 +207,17 @@ class PlayState extends FlxState
             FlxG.sound.play("assets/sounds/Jump6.wav", 1.0);
         }
         FlxG.overlap(enemies, player, collideEnemy, pixelPerfectProcess);
+        FlxG.overlap(enemies2, player, collideEnemy, pixelPerfectProcess);
         FlxG.overlap(spikeEnemies, player, collideSpikeEnemy, pixelPerfectProcess);
+        //FlxG.overlap(myPlatforms, player, collidePlatforms, pixelPerfectProcess);
+        //FlxG.collide(player, myPlatforms);
+        FlxG.collide(player, platform);
     }	
 
+    public function collidePlatforms(enemy:FlxObject, player:FlxObject):Void {
+        trace("PLATFORMS poij");
+        FlxG.switchState(new DeathState(score));
+    }
 
     public function collideSpikeEnemy(enemy:FlxObject, player:FlxObject):Void {
         FlxG.switchState(new DeathState(score));
@@ -159,6 +229,8 @@ class PlayState extends FlxState
         score += 100;
         scoreText.text = "Score: " + score;
         FlxG.sound.play("assets/sounds/Pickup_Coin15.wav", 1.0);
+        var explosion = new Explosion(enemy.x, enemy.y);
+        add(explosion);
     }
 
     private function pixelPerfectProcess(officer:FlxObject, bullet:FlxObject):Bool {
