@@ -1,7 +1,7 @@
 package;
 
-import sys.io.File;
-import sys.FileSystem;
+//import sys.io.File;
+//import sys.FileSystem;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -35,15 +35,18 @@ class DeathState extends FlxState
 		super.create();
         FlxG.sound.play("assets/sounds/Explosion13.wav", 1.0);
         var highScore = 0;
+        /*
         if(FileSystem.exists("highscores.txt")) {
             var content = File.getContent("highscores.txt");
             highScore = Std.parseInt(content);
         }
+        */
         bgColor = 0xff000000;
         retryText = new FlxText(FlxG.width/2-150, FlxG.height/2 - 100, 800, "You have died", 32);
         add(retryText);
         scoreText = new FlxText(FlxG.width/2-40, FlxG.height/2, 200, "Score: " + score, 16);
         add(scoreText);
+        /*
         if(score > highScore) {
             var newHighScoreText = new FlxText(FlxG.width/2-80, FlxG.height/2+50, 200, "NEW HIGHSCORE!", 16);
             add(newHighScoreText);
@@ -52,6 +55,7 @@ class DeathState extends FlxState
         }
         var highScoreText = new FlxText(FlxG.width/2-70, FlxG.height/2+100, 200, "Highscore : "+ highScore, 16);
         add(highScoreText);
+        */
 	}
 
 	/**

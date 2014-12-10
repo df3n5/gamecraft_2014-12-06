@@ -73,7 +73,7 @@ class PlayState extends FlxState
         enemyY = player.y + 36;
         add(enemies);
         add(enemies2);
-        difficulty = 0;
+        difficulty = 20;
 
         //spikes
         add(spikeEnemies);
@@ -91,7 +91,7 @@ class PlayState extends FlxState
         if(FlxG.sound.music != null) {
             FlxG.sound.music.stop();
         }
-        FlxG.sound.playMusic("assets/music/music_0_edit.wav", 0.7, false);
+        FlxG.sound.playMusic("assets/music/music_0_edit.mp3", 0.7, false);
         FlxG.sound.music.onComplete = onMusComplete;
         var timer = new FlxTimer(10.0, upDifficulty, 1);
         
@@ -105,7 +105,7 @@ class PlayState extends FlxState
                 musicTrack = 6;
             }
         }
-        var sound = FlxG.sound.play("assets/music/music_" + musicTrack + "_edit.wav", 0.7);
+        var sound = FlxG.sound.play("assets/music/music_" + musicTrack + "_edit.mp3", 0.7);
         sound.onComplete = onMusComplete;
         musicLoopsSoFar++;
     }
@@ -126,7 +126,7 @@ class PlayState extends FlxState
 
 	public function upDifficulty(timer:FlxTimer):Void {
         difficulty++;
-        trace("Upping difficulty");
+        trace("upping diff");
         var timer = new FlxTimer(10.0, upDifficulty, 1);
     }
 
@@ -139,22 +139,49 @@ class PlayState extends FlxState
             enemyVel = 600;
         } else if(difficulty == 2) {
             choice = FlxRandom.intRanged(0, 4);
-            enemyVel = 1200;
+            enemyVel = 700;
         } else if(difficulty == 3) {
             choice = FlxRandom.intRanged(0, 4);
-            enemyVel = 1800;
+            enemyVel = 800;
         } else if(difficulty == 4) {
             choice = FlxRandom.intRanged(0, 4);
-            enemyVel = 2400;
+            enemyVel = 900;
         } else if(difficulty == 5) {
             choice = FlxRandom.intRanged(0, 4);
-            enemyVel = 3600;
+            enemyVel = 1000;
         } else if(difficulty >= 6) {
             choice = FlxRandom.intRanged(0, 4);
-            enemyVel = 5000;
+            enemyVel = 1100;
         } else if(difficulty >= 7) {
             choice = FlxRandom.intRanged(0, 4);
-            enemyVel = 14000;
+            enemyVel = 1200;
+        } else if(difficulty >= 8) {
+            choice = FlxRandom.intRanged(0, 4);
+            enemyVel = 1300;
+        } else if(difficulty >= 9) {
+            choice = FlxRandom.intRanged(0, 4);
+            enemyVel = 1400;
+        } else if(difficulty >= 10) {
+            choice = FlxRandom.intRanged(0, 4);
+            enemyVel = 1500;
+        } else if(difficulty >= 11) {
+            choice = FlxRandom.intRanged(0, 4);
+            enemyVel = 1600;
+        } else if(difficulty >= 12) {
+            choice = FlxRandom.intRanged(0, 4);
+            enemyVel = 1700;
+        } else if(difficulty >= 13) {
+            choice = FlxRandom.intRanged(0, 4);
+            enemyVel = 1800;
+        } else if(difficulty >= 14) {
+            choice = FlxRandom.intRanged(0, 4);
+            enemyVel = 1900;
+        } else if(difficulty >= 15) {
+            choice = FlxRandom.intRanged(0, 4);
+            enemyVel = 2000;
+        } else if(difficulty >= 16) {
+            choice = FlxRandom.intRanged(0, 4);
+            enemyVel = 2100;
         }
         if(choice == 0) {
             var badGuy :FlxSprite = new FlxSprite(enemyX, enemyY, "assets/images/badguy.png");
@@ -250,7 +277,7 @@ class PlayState extends FlxState
         FlxG.collide(player, ground);
         if (FlxG.keys.pressed.SPACE && player.isTouching(FlxObject.FLOOR)) {
             player.velocity.y = jumpVelocity;
-            FlxG.sound.play("assets/sounds/Jump6.wav", 1.0);
+            FlxG.sound.play("assets/sounds/Jump6.mp3", 1.0);
         }
         FlxG.overlap(enemies, player, collideEnemy, pixelPerfectProcess);
         FlxG.overlap(enemies2, player, collideEnemy, pixelPerfectProcess);
@@ -279,7 +306,7 @@ class PlayState extends FlxState
         enemy.kill();
         score += 100;
         scoreText.text = "Score: " + score;
-        FlxG.sound.play("assets/sounds/Pickup_Coin15.wav", 1.0);
+        FlxG.sound.play("assets/sounds/Pickup_Coin15.mp3", 1.0);
         var explosion = new Explosion(enemy.x, enemy.y);
         add(explosion);
     }
