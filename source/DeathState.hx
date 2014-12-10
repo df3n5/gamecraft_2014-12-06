@@ -61,7 +61,7 @@ class DeathState extends FlxState
 	{
 		super.update();
         if (FlxG.keys.pressed.SPACE) {
-            FlxG.switchState(new PlayState());
+            FlxG.switchState(new MenuState());
         }
     }	
 }

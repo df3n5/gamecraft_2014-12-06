@@ -21,7 +21,6 @@ class Player extends FlxSprite {
 
     override public function update():Void {
         super.update();       
-        /*
         if(this.y < -43) {
             this.animation.play("jump");
         } else {
@@ -29,7 +28,6 @@ class Player extends FlxSprite {
                 this.animation.play("walk");
             }
         }
-        */
         this.cameraSprite.x = x+200;
     }
 }

@@ -33,6 +33,7 @@ class PlayState extends FlxState
     var enemyY:Float;
     var enemyVel:Float = 450;
     private var music:FlxSound;
+    private var difficulty:Int;
 
     //score
     var score:Int;
@@ -72,6 +73,7 @@ class PlayState extends FlxState
         enemyY = player.y + 36;
         add(enemies);
         add(enemies2);
+        difficulty = 0;
 
         //spikes
         add(spikeEnemies);
@@ -91,6 +93,7 @@ class PlayState extends FlxState
         }
         FlxG.sound.playMusic("assets/music/music_0_edit.wav", 0.7, false);
         FlxG.sound.music.onComplete = onMusComplete;
+        var timer = new FlxTimer(10.0, upDifficulty, 1);
         
 	}
 
@@ -121,9 +124,38 @@ class PlayState extends FlxState
         var timer = new FlxTimer(3.0, generateCloud, 1);
     }
 
+	public function upDifficulty(timer:FlxTimer):Void {
+        difficulty++;
+        trace("Upping difficulty");
+        var timer = new FlxTimer(10.0, upDifficulty, 1);
+    }
+
 	public function generateEnemy(timer:FlxTimer):Void {
-        //var choice = FlxRandom.intRanged(0, 2);
-        var choice = 2;
+        var choice = FlxRandom.intRanged(0, 2);
+        if(difficulty == 0) {
+            choice = FlxRandom.intRanged(0, 2);
+        } else if(difficulty == 1) {
+            choice = FlxRandom.intRanged(0, 3);
+            enemyVel = 600;
+        } else if(difficulty == 2) {
+            choice = FlxRandom.intRanged(0, 4);
+            enemyVel = 1200;
+        } else if(difficulty == 3) {
+            choice = FlxRandom.intRanged(0, 4);
+            enemyVel = 1800;
+        } else if(difficulty == 4) {
+            choice = FlxRandom.intRanged(0, 4);
+            enemyVel = 2400;
+        } else if(difficulty == 5) {
+            choice = FlxRandom.intRanged(0, 4);
+            enemyVel = 3600;
+        } else if(difficulty >= 6) {
+            choice = FlxRandom.intRanged(0, 4);
+            enemyVel = 5000;
+        } else if(difficulty >= 7) {
+            choice = FlxRandom.intRanged(0, 4);
+            enemyVel = 14000;
+        }
         if(choice == 0) {
             var badGuy :FlxSprite = new FlxSprite(enemyX, enemyY, "assets/images/badguy.png");
             badGuy.velocity.x -= enemyVel;
@@ -133,16 +165,22 @@ class PlayState extends FlxState
             spike.velocity.x -= enemyVel;
             spikeEnemies.add(spike);
         } else if(choice == 2) {
+            if(specialBadGuy != null && specialBadGuy.alive) {
+                var badGuy :FlxSprite = new FlxSprite(enemyX, enemyY, "assets/images/badguy.png");
+                badGuy.velocity.x -= enemyVel;
+                enemies.add(badGuy);
+            } else {
+                specialBadGuy = new FlxSprite(enemyX, enemyY-200, "assets/images/badguy2.png");
+                specialBadGuy.velocity.x -= enemyVel;
+                specialBadGuy.velocity.y = 50;
+                enemies2.add(specialBadGuy);
+            }
             /*
             var badGuy :FlxSprite= new FlxSprite(enemyX, enemyY, "assets/images/badguy2.png");
             badGuy.velocity.x -= enemyVel;
             enemies2.add(badGuy);
             */
             //var badGuy :FlxSprite= new FlxSprite(enemyX, enemyY-150, "assets/images/badguy2.png");
-            specialBadGuy = new FlxSprite(enemyX, enemyY-200, "assets/images/badguy2.png");
-            specialBadGuy.velocity.x -= enemyVel;
-            specialBadGuy.velocity.y = 100;
-            enemies2.add(specialBadGuy);
 
             /*
             var badGuy :FlxSprite = new FlxSprite(enemyX, enemyY-100, "assets/images/badguy2.png");
@@ -185,7 +223,7 @@ class PlayState extends FlxState
             spike.velocity.x -= enemyVel;
             spikeEnemies.add(spike);
         }
-        var timer = new FlxTimer(4.0, generateEnemy, 1);
+        var timer = new FlxTimer(1.0, generateEnemy, 1);
     }
 	
 	/**
